@@ -10,7 +10,7 @@
     "aliasURL": "https://s3.amazonaws.com/igv.org.genomes/hg38/hg38_alias.tab",
     "chromosomeOrder": "chr1, chr2, chr3, chr4, chr5, chr6, chr7, chr8, chr9, chr10, chr11, chr12, chr13, chr14, chr15, chr16, chr17, chr18, chr19, chr20, chr21, chr22, chrX, chrY"
   },
-  "locus": "chr11:1-135,086,622",
+  "locus": "chr21:45,791,169-46,195,648",
   "roi": [],
   "tracks": [
     {
@@ -19,14 +19,15 @@
     },
     {
       "name": "Refseq Genes",
+      "type": "annotation",
       "format": "refgene",
       "url": "https://hgdownload.soe.ucsc.edu/goldenPath/hg38/database/ncbiRefSeq.txt.gz",
       "indexed": false,
-      "removable": false,
+      "removable": true,
       "order": -1,
       "infoURL": "https://www.ncbi.nlm.nih.gov/gene/?term=$$",
-      "type": "annotation",
-      "height": 70
+      "height": 35,
+      "color": "#5e5e5e"
     },
     {
       "name": "Gencode v46",
@@ -36,9 +37,10 @@
       "height": 300,
       "url": "http://127.0.0.1:8000/Resources/tracks/gencode_annotations/gencode.v46.chr_patch_hapl_scaff.annotation.sorted.gff3.gz",
       "indexURL": "http://127.0.0.1:8000/Resources/tracks/gencode_annotations/gencode.v46.chr_patch_hapl_scaff.annotation.sorted.gff3.gz.tbi",
+      "infoURL": "https://www.ncbi.nlm.nih.gov/gene/?term=$$",
       "visibilityWindow": 500000,
-      "order": 0
+      "order": 0,
+      "altColor": "rgb(0, 140, 255)"
     }
   ]
 }
-

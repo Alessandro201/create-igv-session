@@ -30,8 +30,12 @@ line-length = 120
 
 [tool.basedpyright]
 reportUnknownVariableType = false
-reportAny = false
 reportUnknownArgumentType = false
 reportUnknownMemberType = false
 reportUnknownLambdaType = false
+reportUnknownParameterType = false
+reportAny = false
 reportImplicitStringConcatenation = false
+reportRedeclaration = false
+reportUnusedCallResult = false
+reportMissingTypeArgument = false

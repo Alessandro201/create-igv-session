@@ -1,0 +1,70 @@
+{
+  "include": [
+    ".*merge.*\\/03_peak_calling\\/04_called_peaks\\/macs2_filtered_q11\\/.*\\.narrowPeak(\\.(gz|zst))?$",
+    ".*merge.*\\/03_peak_calling\\/04_called_peaks\\/macs2\\/.*\\.broadPeak(\\.(gz|zst))?$",
+    ".*cons2.*\\/03_peak_calling\\/03_bed_to_bigwig\\/.*\\.bigWig$",
+    ".*\\/star_salmon\\/bigwig/.*\\.bigWig$"
+  ],
+  "exclude": [],
+  "filetypes_allowed": [],
+  "rna_tracks": [
+    ".*\\/star_salmon\\/bigwig\\/.*\\.bigWig$"
+  ],
+  "overlay_rna_strands": false,
+  "tracks features": {
+    ".*_BULK_.*\\.bigWig$": {
+      "color": "rgb(58, 58, 58)"
+    },
+    ".*narrowPeak(\\.gz|zst)?$": {
+      "color": "#e87314",
+      "format": "narrowPeak",
+      "height": 25
+    },
+    ".*broadPeak(\\.gz|zst)?$": {
+      "color": "#e87314",
+      "format": "broadPeak",
+      "height": 25
+    },
+    ".*merge.*_BULK_.*": {
+      "color": "#018448"
+    },
+    ".*merge.*_TM4_.*": {
+      "color": "#008cff"
+    },
+    ".*\\.forward.bigWig": {
+      "color": "rgb(0, 140, 255)"
+    },
+    ".*\\.reverse.bigWig": {
+      "color": "#001888",
+      "flipAxis": true
+    }
+  },
+  "tracks order": [
+    [
+      ".*/star_salmon/.*",
+      ".*/03_peak_calling/.*"
+    ],
+    [
+      ".*H3K27ac_ab2.*",
+      ".*H3K4me3.*",
+      ".*H3K4me1.*",
+      ".*H3K27me3.*"
+    ],
+    [
+      ".*merge.*"
+    ],
+    [
+      ".*\\/.*_BULK.*",
+      ".*\\/.*_TM4.*"
+    ],
+    [
+      ".*_R(\\d+)\\..*"
+    ],
+    [
+      ".*\\.bigWig$",
+      ".*narrowPeak(\\.(gz|zst))?$",
+      ".*broadPeak(\\.(gz|zst))?$",
+      ".*\\.bed(\\.(gz|zst))?$"
+    ]
+  ]
+}

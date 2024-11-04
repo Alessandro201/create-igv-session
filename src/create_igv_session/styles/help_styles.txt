@@ -1,0 +1,40 @@
+Available styles:
+
+- default
+    Create a session with the bigWig tracks of every sample, the merged bigWig of every histone mark, and the corresponding consensus peaks called on the merged file.
+
+    You need to give the paths to the above mentioned files, example:
+    create-igv-session                                                  \
+        H3K*/1_cutandrun/results/03_peak_calling/03_bed_to_bigwig/      \
+        CONSENSUS                                                       \
+        -p default
+
+
+- default-rna
+    Same as above but with the RNA tracks:
+
+    create-igv-session                                                  \
+        H3K*/1_cutandrun/results/03_peak_calling/03_bed_to_bigwig/      \
+        CONSENSUS                                                       \
+        RNASEQ/results/star_salmon/bigwig/                              \
+        -p default-rna
+
+
+- default-overlay-rna
+    Same as above but with the RNA tracks overlayed:
+
+    create-igv-session                                                  \
+        H3K*/1_cutandrun/results/03_peak_calling/03_bed_to_bigwig/      \
+        CONSENSUS                                                       \
+        RNASEQ/results/star_salmon/bigwig/                              \
+        -p default-overlay-rna
+
+
+- final-rna
+    Create an IGV session with the consensus peaks, the corresponding merged bigWig tracks, and the rna tracks.
+
+    create-igv-session                                                  \
+        CONSENSUS                                                       \
+        RNASEQ/results/star_salmon/bigwig/                              \
+        -p final-rna
+

@@ -1,0 +1,55 @@
+{
+  "include": [
+    ".*CONSENSUS.*\\.narrowPeak(\\.(gz|zst))?$",
+    ".*CONSENSUS.*\\.broadPeak(\\.(gz|zst))?$",
+    ".*CONSENSUS.*\\.bed(\\.(gz|zst))?$",
+    ".*\\.bigWig$"
+  ],
+  "exclude": [],
+  "filetypes_allowed": [],
+  "tracks features": {
+    ".*_BULK_.*\\.bigWig$": {
+      "color": "rgb(58, 58, 58)"
+    },
+    ".*narrowPeak(\\.gz|zst)?$": {
+      "color": "#e87314",
+      "format": "narrowPeak",
+      "height": 25
+    },
+    ".*broadPeak(\\.gz|zst)?$": {
+      "color": "#e87314",
+      "format": "broadPeak",
+      "height": 25
+    },
+    ".*CONSENSUS.*_BULK.*": {
+      "color": "#018448"
+    },
+    ".*CONSENSUS.*_TM4.*": {
+      "color": "#008cff"
+    }
+  },
+  "tracks order": [
+    [
+      ".*H3K27ac.*",
+      ".*H3K4me3.*",
+      ".*H3K4me1.*",
+      ".*H3K27me3.*"
+    ],
+    [
+      ".*CONSENSUS.*"
+    ],
+    [
+      ".*narrowPeak(?:\\.(?:gz|zst))?$",
+      ".*broadPeak(?:\\.(?:gz|zst))?$",
+      ".*\\.bed(?:\\.(?:gz|zst))?$",
+      ".*\\.bigWig$"
+    ],
+    [
+      ".*\\/.*_BULK.*",
+      ".*\\/.*_TM4.*"
+    ],
+    [
+      ".*H3K.*/.*_R(\\d+)\\..*"
+    ]
+  ]
+}

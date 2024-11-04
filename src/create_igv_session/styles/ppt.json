@@ -1,0 +1,101 @@
+{
+  "include": [
+    ".*\\.narrowPeak(\\.(gz|zst))?$",
+    ".*\\.broadPeak(\\.(gz|zst))?$",
+    ".*\\.bed(\\.(gz|zst))?$",
+    ".*\\.bigWig$",
+    ".*\\/star_salmon\\/bigwig/.*\\.bigWig$"
+  ],
+  "exclude": [
+    ".*summit.*",
+    ".*cut\\.bed.*",
+    ".*filtered.*"
+  ],
+  "filetypes_allowed": [],
+  "rna_tracks": [
+    ".*\\/star_salmon\\/bigwig\\/.*\\.bigWig$"
+  ],
+  "overlay_rna_strands": false,
+  "tracks features": {
+    ".*_BULK_.*\\.bigWig$": {
+      "color": "rgb(58, 58, 58)"
+    },
+    ".*_BULK.*": {
+      "color": "#018448"
+    },
+    ".*_TM4.*": {
+      "color": "#008cff"
+    },
+    ".*\\.forward.bigWig": {
+      "color": "rgb(0, 140, 255)"
+    },
+    ".*\\.reverse.bigWig": {
+      "color": "#001888",
+      "flipAxis": true
+    },
+    ".*narrowPeak(\\.gz|zst)?$": {
+      "color": "#004a88",
+      "format": "narrowPeak",
+      "height": 25
+    },
+    ".*broadPeak(\\.gz|zst)?$": {
+      "color": "#004a88",
+      "format": "broadPeak",
+      "height": 25
+    },
+    ".*bed(\\.gz|zst)?$": {
+      "color": "#004a88",
+      "format": "bed",
+      "height": 25
+    },
+    ".*H3K27ac.*": {
+      "color": "#FB5607"
+    },
+    ".*H3K4me3.*": {
+      "color": "#8338EC"
+    },
+    ".*H3K4me1.*": {
+      "color": "#FF006E"
+    },
+    ".*H3K27me3.*": {
+      "color": "#FFBE0B"
+    },
+    ".*H3K27ac.*bigWig$": {
+      "color": "#aa3d0a"
+    },
+    ".*H3K4me3.*bigWig$": {
+      "color": "#4c2189"
+    },
+    ".*H3K4me1.*bigWig$": {
+      "color": "#990143"
+    },
+    ".*H3K27me3.*bigWig$": {
+      "color": "#936d02"
+    }
+  },
+  "tracks order": [
+    [
+      ".*/star_salmon/.*"
+    ],
+    [
+      ".*H3K27ac.*",
+      ".*H3K4me3.*",
+      ".*H3K4me1.*",
+      ".*H3K27me3.*"
+    ],
+    [
+      ".*seacr.*",
+      ".*HTSFLOW.*"
+    ],
+    [
+      ".*narrowPeak(?:\\.(?:gz|zst))?$",
+      ".*broadPeak(?:\\.(?:gz|zst))?$",
+      ".*\\.bed(?:\\.(?:gz|zst))?$",
+      ".*\\.bigWig$"
+    ],
+    [
+      ".*\\/.*_BULK.*",
+      ".*\\/.*_TM4.*"
+    ]
+  ]
+}
