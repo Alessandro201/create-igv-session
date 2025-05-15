@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 import argparse
+import glob
 import json
 import re
 import textwrap
 from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from pathlib import Path
+from pprint import pprint
 from typing import Union
 
 STYLES_FOLDER = Path(__file__).parent / "styles/"
@@ -136,10 +138,6 @@ def parse_args():
         print(HELP_STYLES)
         exit(0)
 
-    if not args.sources:
-        print("The following arguments are required: sources")
-        exit(1)
-
     args.output = Path(args.output)
 
     if args.no_preset and not args.stylesheet:
@@ -161,7 +159,6 @@ def parse_args():
         args.stylesheet = [preset_stylesheet or Path(args.stylesheet)]
     args.template = Path(args.template or preset_template)
 
-    args.sources = [Path(s) for s in args.sources]
     args.url = args.url if args.url.endswith("/") else args.url + "/"
 
     if args.output.exists() and not args.force:
@@ -171,11 +168,6 @@ def parse_args():
     for stylesheet in args.stylesheet:
         if not stylesheet.exists():
             print(f"The given stylesheet file does not exists: {stylesheet}")
-            exit(1)
-
-    for src in args.sources:
-        if not src.is_dir():
-            print(f"The given source is not a valid directory: {src}")
             exit(1)
 
     return args
@@ -257,9 +249,7 @@ def match_any_pattern(trackpath: Track, patterns: "list[str]") -> bool:
     return any((re.match(pattern, trackpath.path.as_posix()) for pattern in patterns))
 
 
-def sort_paths(
-    trackpaths: Iterable[Track], sort_patterns: "list[list[str]]", remove_rep_number: bool = True
-) -> "list[Track]":
+def sort_paths(trackpaths: Iterable[Track], sort_patterns: "list[list[str]]") -> "list[Track]":
     trackpaths = list(trackpaths)
     trackpaths_sortkeys = [multikey_sort(trackpath.path.as_posix(), sort_patterns) for trackpath in trackpaths]
 
@@ -273,13 +263,17 @@ def sort_paths(
                     textwrap.dedent(f"""
                     ERROR: When the regex pattern 
                       [
-                        {'\n\
-                        '.join(pattern) }
+                        {
+                        "\n\
+                        ".join(pattern)
+                    }
                       ]
                     is applied to the paths it produced results that cauldn't be compared and sorted.
 
                     For instance on '{trackpaths[0].path.as_posix()}' it produced {trackpaths_sortkeys[0][i_pattern]}
-                    while on '{trackpaths[i_trackpath].path.as_posix()}' it produced a '{trackpaths_sortkeys[i_trackpath][i_pattern]}'
+                    while on '{trackpaths[i_trackpath].path.as_posix()}' it produced a '{
+                        trackpaths_sortkeys[i_trackpath][i_pattern]
+                    }'
 
                     This is likely due to the fact that you used a regex capture group capturing it's contents when you didn't want them.
                     For example the pattern '.*\\.bed(\\.gz)?' when applied on 'text.bed' will return (None,) because the regex pattern matched the string, but the capture group did not capture anything.
@@ -474,13 +468,18 @@ def main() -> int:
     overlay_rna_strands: bool = False
     filetypes_allowed: list[str] = []
     sort_patterns: list[list[str]] = []
+    paths: list[str] = []
+    # Find all files in the directories given as SOURCE
+    paths.extend([p for src in args.sources for p in Path(src).rglob("*")])
     for style in styles:
+        style_sources = style.get("sources", [])
+        paths.extend([Path(p) for src in style_sources for p in glob.glob(src)])
         exclude_patterns.extend(style.get("exclude", []))
         include_patterns.extend(style.get("include", []))
         rna_track_patterns.extend(style.get("rna_tracks", []))
         overlay_rna_strands = style.get("overlay_rna_strands", overlay_rna_strands)
         filetypes_allowed.extend(style.get("filetypes_allowed", []))
-        sort_patterns = style.get("tracks order") or sort_patterns
+        sort_patterns = style.get("tracks_order") or sort_patterns
 
     exclude_patterns = exclude_patterns or []
     include_patterns = include_patterns or [".*"]
@@ -489,25 +488,63 @@ def main() -> int:
     filetypes_allowed = map(lambda ft: ft if ft.startswith(".*") else f".*{ft}", filetypes_allowed)
     filetypes_allowed = map(lambda ft: ft if ft.endswith("$") else f"{ft}$", filetypes_allowed)
     filetypes_allowed = list(filetypes_allowed)
+    if args.debug:
+        print(f"Patterns: ")
+        print("sources: ")
+        pprint(paths)
+        print("\n\ninclude patterns: ")
+        pprint(include_patterns)
+        print("\n\nexclude patterns: ")
+        pprint(exclude_patterns)
+        print("\n\nrna track patterns: ")
+        pprint(rna_track_patterns)
+        print("\n\noverlay rna strands")
+        pprint(overlay_rna_strands)
+        print("\n\nfiletypes allowed")
+        pprint(filetypes_allowed)
+        print("\n\nsort patterns")
+        pprint(sort_patterns)
 
-    paths = [p for src in args.sources for p in src.rglob("*")]
+    if args.debug:
+        print(f"\n\n\nFound {len(paths)} possible tracks")
+
     trackpaths: list[Track] = group_tracks_with_indexes(paths)
+    if args.debug:
+        print(f"\n\n\nMerged index files in {len(trackpaths)} possible tracks")
 
-    trackpaths: filter[Track] = filter(
-        lambda t: match_any_pattern(t, include_patterns + rna_track_patterns), trackpaths
+    trackpaths: filter[Track] = list(
+        filter(lambda t: match_any_pattern(t, include_patterns + rna_track_patterns), trackpaths)
     )
-    trackpaths: filter[Track] = filter(lambda t: match_any_pattern(t, filetypes_allowed), trackpaths)
-    trackpaths: filter[Track] = filter(lambda t: not match_any_pattern(t, exclude_patterns), trackpaths)
+    if args.debug:
+        print(f'\n\n\nTracks which matched an "include" filter: ')
+        pprint(trackpaths)
+    trackpaths: filter[Track] = list(filter(lambda t: match_any_pattern(t, filetypes_allowed), trackpaths))
+    if args.debug:
+        print(f"\n\n\nTracks with the correct filetype: ")
+        pprint(trackpaths)
+    trackpaths: filter[Track] = list(filter(lambda t: not match_any_pattern(t, exclude_patterns), trackpaths))
+    if args.debug:
+        print(f"\n\n\nTracks after filtering out excluded paths: ")
+        pprint(trackpaths)
     if overlay_rna_strands:
         trackpaths: "list[Track | RNABigWig]" = group_rna_strands(trackpaths, rna_track_patterns)
+        if args.debug:
+            print(f"\n\n\nGrouped RNA trands: ")
+            pprint(trackpaths)
     trackpaths: "list[Track | RNABigWig]" = sort_paths(trackpaths, sort_patterns)
+    if args.debug:
+        print(f"\n\n\nTracks sorted: ")
+        pprint(trackpaths)
 
     ##### Overlay RNA tracks
 
     tracks = [set_base_track_features(tp, prefix=args.url, order=i + 10) for i, tp in enumerate(trackpaths)]
     for style in styles:
-        track_features = style.get("tracks features", {})
+        track_features = style.get("tracks_features", {})
         tracks = [update_track_features(t, track_features) for t in tracks]
+    if args.debug:
+        print(f"\n\n\nAddition of features to tracks: ")
+        pprint(trackpaths)
 
     json_session = add_to_template(args.template, tracks)
     Path(args.output).write_text(json.dumps(json_session, indent=2))
