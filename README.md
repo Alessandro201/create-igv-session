@@ -1,3 +1,3 @@
-# 4-create-igv-session
+# Create igv session
 
 Describe your project here.
